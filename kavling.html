@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Info Kavling</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .card {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1>Detail Kavling</h1>
+
+        <div class="row"><span class="label">Blok:</span> <span id="blok">-</span></div>
+        <div class="row"><span class="label">Nomor:</span> <span id="nomor">-</span></div>
+        <div class="row"><span class="label">Luas:</span> <span id="luas">-</span> m²</div>
+        <div class="row"><span class="label">Harga:</span> Rp <span id="harga">-</span></div>
+
+        <iframe id="sertifikat"></iframe>
+    </div>
+
+    <script>
+        // === GANTI SPREADSHEET_ID DI BAWAH ===
+        const SPREADSHEET_ID = "1mATuMHaoL40wGVdoLhmqpNAYq2trKnyIA4BS3Z1BW20";
+        const SHEET_NAME = "Sheet1";
+
+        const params = new URLSearchParams(window.location.search);
+        const kode = params.get("kode"); // contoh: A01
+
+        const SHEET_URL = `https://opensheet.elk.sh/${SPREADSHEET_ID}/${SHEET_NAME}`;
+
+        fetch(SHEET_URL)
+            .then(response => response.json())
+            .then(data => {
+                const kavling = data.find(
+                    item => (item.blok + item.nomor) === kode
+                );
+
+                if (!kavling) {
+                    alert("Data kavling tidak ditemukan");
+                    return;
+                }
+
+                document.getElementById("blok").innerText = kavling.blok;
+                document.getElementById("nomor").innerText = kavling.nomor;
+                document.getElementById("luas").innerText = kavling.luas;
+                document.getElementById("harga").innerText =
+                    Number(kavling.harga).toLocaleString("id-ID");
+                document.getElementById("sertifikat").src = kavling.sertifikat;
+            })
+            .catch(err => {
+                alert("Gagal mengambil data spreadsheet");
+                console.error(err);
+            });
+    </script>
+
+</body>
+
+</html>
