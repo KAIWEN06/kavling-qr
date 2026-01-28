@@ -60,44 +60,48 @@
         <iframe id="sertifikat"></iframe>
     </div>
 
-    <script>
-        // === GANTI SPREADSHEET_ID DI BAWAH ===
-        const SPREADSHEET_ID = "1mATuMHaoL40wGVdoLhmqpNAYq2trKnyIA4BS3Z1BW20";
-        const SHEET_NAME = "Sheet1";
+<script>
+  const SPREADSHEET_ID = "ISI_DENGAN_SPREADSHEET_ID_KAMU";
+  const SHEET_NAME = "Sheet1";
 
-        const params = new URLSearchParams(window.location.search);
-        const kode = params.get("kode"); // contoh: A01
+  const params = new URLSearchParams(window.location.search);
+  const kode = params.get("kode"); // contoh: A1
 
-        const SHEET_URL = `https://opensheet.elk.sh/${SPREADSHEET_ID}/${SHEET_NAME}`;
+  const SHEET_URL = `https://opensheet.elk.sh/${SPREADSHEET_ID}/${SHEET_NAME}`;
 
-        fetch(SHEET_URL)
-            .then(response => response.json())
-            .then(data => {
-                const kavling = data.find(
-                item => (item.blok + String(item.nomor)) === kode
-                );
+  fetch(SHEET_URL)
+    .then(res => res.json())
+    .then(data => {
+      console.log(data); // DEBUG
 
+      const kavling = data.find(item => {
+        const blok = String(item.blok).trim();
+        const nomor = String(item.nomor).trim();
+        return (blok + nomor) === kode;
+      });
 
-                if (!kavling) {
-                    alert("Data kavling tidak ditemukan");
-                    return;
-                }
+      if (!kavling) {
+        alert("Data kavling tidak ditemukan");
+        return;
+      }
 
-                document.getElementById("blok").innerText = kavling.blok;
-                document.getElementById("nomor").innerText = kavling.nomor;
-                document.getElementById("luas").innerText = kavling.luas;
-                document.getElementById("harga").innerText =
-                    Number(kavling.harga).toLocaleString("id-ID");
-                document.getElementById("sertifikat").src = kavling.sertifikat;
-            })
-            .catch(err => {
-                alert("Gagal mengambil data spreadsheet");
-                console.error(err);
-            });
-    </script>
+      document.getElementById("blok").innerText = kavling.blok;
+      document.getElementById("nomor").innerText = kavling.nomor;
+      document.getElementById("luas").innerText = kavling.luas;
+      document.getElementById("harga").innerText =
+        Number(kavling.harga).toLocaleString("id-ID");
+      document.getElementById("sertifikat").src = kavling.sertifikat;
+    })
+    .catch(err => {
+      alert("Gagal mengambil data");
+      console.error(err);
+    });
+</script>
+
 
 </body>
 
 
 </html>
+
 
